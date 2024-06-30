@@ -1,26 +1,46 @@
-// Find the Maximum Length of Valid Subsequence 2
-// similar to lis 
-/*
-  rem  1  4 2 3 1 4  , k=3
-  0    0  0 1
-  1    0  0 0
-  2    0  1 0
-  => here 1 shows we have an element other than that before it.
-*/
+#include<bits/stdc++.h>
+using namespace std;
+
 class Solution {
 public:
-    int maximumLength(vector<int>& nums, int k) {
+    /*
+        even even even
+        even odd even 
+        
+        odd odd odd
+        odd even odd 
+
+
+        1 3 
+        2 4 
+        even ... odd even odd even .....
+
+        1 1 1 1 
+        2 2 2
+
+        1 2 1 2 1 
+    */
+    int maximumLength(vector<int>& nums) {
+        // 0 - odd 1-even
         int n = nums.size();
-        vector<vector<int>>dp(n,vector<int>(k,0));
-        int maxi=0;
+        bool polarity = (nums[0]%2!=0);
+        int odd_len=0,even_len=0;
+        for(int i=0;i<n;++i){
+            even_len += (nums[i]%2==0);
+        }
+        for(int i=0;i<n;++i){
+            odd_len += (nums[i]%2!=0);
+        }
+        int ele = nums[0]; int size=1;
         for(int i=1;i<n;++i){
-            for(int j=0;j<i;++j){
-                int mod = (nums[i]+nums[j])%k;
-                dp[i][mod] = max((dp[i][mod]),(dp[j][mod]+1));
-                maxi=max(maxi,dp[i][mod]);
+            if((nums[i]%2!=0) == polarity) continue;
+            else {
+                size += 1;
+                ele = nums[i];
+                polarity = (nums[i]%2!=0);
             }
         }
-        return maxi+1;
+        // cout<<size<<endl<<odd_len<<endl<<even_len<<endl;
+        return max((size),max(odd_len,even_len));
     }
-
 };
